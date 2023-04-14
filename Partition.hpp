@@ -25,6 +25,7 @@ public:
 	int checkBalance();
 	int size();
 	bool at(int i);
+	void apply(int move);
 
 };
 

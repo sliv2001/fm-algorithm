@@ -25,7 +25,8 @@ Reader::Reader(string path) {
 	int currentEdge=0;
 	string strBuf;
 	while (!fin.eof()){
-		graphContents.push_back(vector<int>());
+		edgeVert.push_back(vector<int>());
+		vertEdge.push_back(vector<int>());
 
 		std::getline(fin, strBuf);
 		stringstream strs(strBuf);
@@ -35,14 +36,15 @@ Reader::Reader(string path) {
 				break;
 //				throw "Something went wrong with reading edge "+to_string(currentEdge);
 			}
-			graphContents[currentEdge].push_back(num);
+			edgeVert[currentEdge].push_back(num);
+			vertEdge[num].push_back(currentEdge);
 		}
 		currentEdge++;
 	}
 }
 
 void Reader::printMatrix() {
-	for (auto& i : graphContents){
+	for (auto& i : edgeVert){
 		for (int j : i)
 			cout<<j<<' ';
 		cout<<endl;

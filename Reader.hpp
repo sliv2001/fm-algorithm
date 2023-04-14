@@ -15,7 +15,10 @@ class Reader {
 private:
 	int vertexCount=0;
 	int edgeCount=0;
-	std::vector<std::vector<int>> graphContents;
+
+	std::vector<std::vector<int>> edgeVert;
+	std::vector<std::vector<int>> vertEdge;
+
 public:
 	Reader(std::string path);
 	virtual ~Reader(){};
@@ -23,7 +26,8 @@ public:
 
 	int getVertexCount() const {return vertexCount;}
 	int getEdgeCount() const {return edgeCount;}
-	const std::vector<std::vector<int> >& getGraphContents() const {return graphContents;}
+	const std::vector<std::vector<int> >& getEdgeVert() const {return edgeVert;}
+	const std::vector<std::vector<int> >& getVertEdge() const {return vertEdge;}
 };
 
 #endif /* READER_HPP_ */

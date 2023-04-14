@@ -40,3 +40,7 @@ int Partition::size() {
 bool Partition::at(int i) {
 	return contents[i];
 }
+
+void Partition::apply(int move) {
+	contents[move]= !contents[move];
+}
