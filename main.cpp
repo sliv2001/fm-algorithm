@@ -9,6 +9,7 @@
 #include "Parser.hpp"
 #include "Reader.hpp"
 #include "Partition.hpp"
+#include "FM.hpp"
 
 using namespace std;
 
@@ -28,7 +29,9 @@ int main(int argc, char **argv) {
 	catch (string &exception) {
 		cerr<<exception;
 	}
-
+	FM solver(*reader, partition);
+	solver.calculate();
+	solver.save(parser.getInput()+".part.2");
 
 	return 0;
 }

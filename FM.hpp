@@ -23,13 +23,14 @@ private:
 	std::stack<int> moves;
 	int bestCost=INT_MAX;
 	int bestCostMove=-1;
+	void FMPass();
+	void saveBestMove(int move, int cost);
+	void revertToBest();
 public:
 	FM(Reader& reader, Partition& partition);
 	virtual ~FM(){delete gc;};
 	void calculate();
-	void FMPass();
-	void saveBestMove(int move, int cost);
-	void revertToBest();
+	void save(std::string path);
 };
 
 #endif /* FM_HPP_ */

@@ -6,6 +6,7 @@
  */
 
 #include "FM.hpp"
+#include <fstream>
 
 FM::FM(Reader& reader, Partition& partition):reader(reader), partition(partition) {
 	// TODO Auto-generated constructor stub
@@ -16,7 +17,7 @@ void FM::calculate() {
 	do{
 		gc->initialize();
 		FMPass();
-	} while (newCost<oldCost+);
+	} while (newCost<oldCost);
 }
 
 void FM::FMPass() {
@@ -47,5 +48,14 @@ void FM::revertToBest() {
 	for (int i=revertCount; i>=0; i++){
 		partition.apply(moves.top());
 		moves.pop();
+	}
+}
+
+void FM::save(std::string path) {
+	std::ofstream fout(path, std::ios_base::out);
+	if (!fout.is_open())
+		throw "Could not open output file";
+	for (int i=0; i<reader.getVertexCount(); i++){
+		fout<<partition.at(i)<<std::endl;
 	}
 }
