@@ -19,12 +19,14 @@ private:
 	Partition& partition;
 	std::map<int, std::list<int>> left0;
 	std::map<int, std::list<int>> right1;
+	std::vector<bool> erased;
 	int maxGainL=-INT_MAX+1;
 	int maxGainR=-INT_MAX+1;
 
 	bool noVerts(int edge, bool part);
 	int oneV(int edge, bool part);
 	void printBucket(std::map<int, std::list<int>>& mm);
+	int getNextGain(int move, std::map<int, std::list<int>>::iterator iter);
 
 public:
 	GainContainer(Reader& reader, Partition& partition);
