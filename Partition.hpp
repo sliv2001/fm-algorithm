@@ -16,12 +16,14 @@ class Partition {
 private:
 	std::vector<bool> contents;
 	std::stack<int> workOrder;
+	int vertexSize;
 public:
-	Partition(){};
 	Partition(int vertexSize);
 	virtual ~Partition(){};
 	void initPartition(int vertexSize);
 	void setOneZeroPartition();
+	void setRandomPartition();
+	void setSamplePartition();
 	int checkBalance();
 	int size();
 	bool at(int i);

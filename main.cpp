@@ -13,25 +13,33 @@
 
 using namespace std;
 
+bool debug=0;
+
 int main(int argc, char **argv) {
 	Parser parser(argc, argv);
 	Reader *reader;
-	Partition partition;
+
 	try {
 		cout << parser.getInput() << endl;
-
+		debug=parser.getDebug();
 		reader = new Reader(parser.getInput());
-		reader->printMatrix();
-		partition.initPartition(reader->getVertexCount());
-		partition.setOneZeroPartition();
+		if (debug)
+			reader->printMatrix();
 
+		Partition partition(reader->getVertexCount());
+#ifdef DEBUG
+		partition.setSamplePartition();
+#else
+		partition.setOneZeroPartition();
+#endif
+		FM solver(*reader, partition);
+		solver.calculate();
+		solver.save(parser.getInput()+".part.2");
 	}
 	catch (string &exception) {
 		cerr<<exception;
+		return -1;
 	}
-	FM solver(*reader, partition);
-	solver.calculate();
-	solver.save(parser.getInput()+".part.2");
 
 	return 0;
 }

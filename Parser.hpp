@@ -19,6 +19,7 @@ public:
 	Parser(int, char**);
 	virtual ~Parser(){};
 	std::string getInput();
+	bool getDebug();
 };
 
 #endif /* PARSER_HPP_ */

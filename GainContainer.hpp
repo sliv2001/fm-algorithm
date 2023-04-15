@@ -19,9 +19,12 @@ private:
 	Partition& partition;
 	std::map<int, std::list<int>> left0;
 	std::map<int, std::list<int>> right1;
+	int maxGainL=-INT_MAX+1;
+	int maxGainR=-INT_MAX+1;
 
 	bool noVerts(int edge, bool part);
 	int oneV(int edge, bool part);
+	void printBucket(std::map<int, std::list<int>>& mm);
 
 public:
 	GainContainer(Reader& reader, Partition& partition);
@@ -35,6 +38,7 @@ public:
 	void update(int vertex, bool part, int delta);
 	void putIntoBucket(int vertex, int gain);
 	void remove(int move);
+	void printGainBuckets();
 };
 
 #endif /* GAINCONTAINER_HPP_ */

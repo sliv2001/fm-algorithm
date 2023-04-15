@@ -19,6 +19,8 @@ private:
 	std::vector<std::vector<int>> edgeVert;
 	std::vector<std::vector<int>> vertEdge;
 
+	void initVectors_inGraph(int edge, int vert);
+
 public:
 	Reader(std::string path);
 	virtual ~Reader(){};

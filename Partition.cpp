@@ -8,7 +8,9 @@
 #include "Partition.hpp"
 #include <cstdlib>
 
-Partition::Partition(int vertexSize) {
+using namespace std;
+
+Partition::Partition(int vertexSize): vertexSize(vertexSize) {
 	initPartition(vertexSize);
 }
 
@@ -43,4 +45,20 @@ bool Partition::at(int i) {
 
 void Partition::apply(int move) {
 	contents[move]= !contents[move];
+}
+
+void Partition::setRandomPartition() {
+	for (int i=0; i<vertexSize; i++){
+		contents.push_back(rand()%2);
+	}
+}
+
+void Partition::setSamplePartition() {
+#ifdef DEBUG
+	if (vertexSize==8){
+		contents=vector<bool>({0, 1, 0, 0, 1, 1, 0, 1});
+	}
+#else
+	throw "Use this in debug mode only";
+#endif
 }

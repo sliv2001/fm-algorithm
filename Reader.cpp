@@ -12,6 +12,13 @@
 
 using namespace std;
 
+void Reader::initVectors_inGraph(int edge, int vert) {
+	for (int i=0; i<edge; i++)
+		edgeVert.push_back(vector<int>());
+	for (int i=0; i<vert; i++)
+		vertEdge.push_back(vector<int>());
+}
+
 Reader::Reader(string path) {
 	ifstream fin(path, ios_base::in);
 	if (!fin.is_open()){
@@ -24,9 +31,8 @@ Reader::Reader(string path) {
 
 	int currentEdge=0;
 	string strBuf;
+	initVectors_inGraph(edgeCount, vertexCount);
 	while (!fin.eof()){
-		edgeVert.push_back(vector<int>());
-		vertEdge.push_back(vector<int>());
 
 		std::getline(fin, strBuf);
 		stringstream strs(strBuf);
@@ -36,8 +42,8 @@ Reader::Reader(string path) {
 				break;
 //				throw "Something went wrong with reading edge "+to_string(currentEdge);
 			}
-			edgeVert[currentEdge].push_back(num);
-			vertEdge[num].push_back(currentEdge);
+			edgeVert[currentEdge].push_back(num-1);
+			vertEdge[num-1].push_back(currentEdge);
 		}
 		currentEdge++;
 	}

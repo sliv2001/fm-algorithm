@@ -7,9 +7,16 @@
 
 #include "GainContainer.hpp"
 #include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+extern bool debug;
+
+//TODO Add skip iterators to all
 
 GainContainer::GainContainer(Reader& reader, Partition& partition): reader(reader), partition(partition) {
-	for (int i=-reader.getEdgeCount(); i<reader.getEdgeCount(); i++){
+	for (int i=-reader.getEdgeCount(); i<=reader.getEdgeCount(); i++){
 		left0[i]=std::list<int>();
 		right1[i] = std::list<int>();
 	}
@@ -18,10 +25,12 @@ GainContainer::GainContainer(Reader& reader, Partition& partition): reader(reade
 void GainContainer::initialize() {
 	for (int i=0; i<reader.getVertexCount(); i++){
 		int gain=0;
-		bool isOnlyVertex=1, isOnOneSide=1;
 		bool isRight = partition.at(i);
 		for (auto& edge : reader.getVertEdge()[i]){
+			bool isOnlyVertex=1, isOnOneSide=1;
 			for (auto& v1 : reader.getEdgeVert()[edge]){
+				if (v1==i)
+					continue;
 				if (isOnlyVertex && partition.at(v1)==isRight){
 					isOnlyVertex=0;
 				}
@@ -36,6 +45,8 @@ void GainContainer::initialize() {
 		}
 		this->putIntoBucket(i, gain);
 	}
+	if (debug)
+		printGainBuckets();
 }
 
 int GainContainer::getCost() {
@@ -54,23 +65,25 @@ int GainContainer::getCost() {
 	return cost;
 }
 
+//TODO swap gain and balance
+
 int GainContainer::bestFeasibleMove() {
 
-	int diff = (*right1.rbegin()).first-(*left0.rbegin()).first;
+	int diff = maxGainR-maxGainL;
 	if (diff>0){
-		return *(*right1.rbegin()).second.begin();
+		return *right1[maxGainR].begin();
 	}
 	else if (diff<0){
-		return *(*left0.rbegin()).second.begin();
+		return *left0[maxGainL].begin();
 	}
 	else if (partition.checkBalance()>0){
-		return *(*right1.rbegin()).second.begin();
+		return *right1[maxGainR].begin();
 	}
 	else if (partition.checkBalance()<0){
-		return *(*left0.rbegin()).second.begin();
+		return *left0[maxGainL].begin();
 	}
 	else{
-		return *(*right1.rbegin()).second.begin();
+		return *right1[maxGainR].begin();
 	}
 
 }
@@ -80,7 +93,8 @@ std::map<int, std::list<int> >& GainContainer::getMap(int vertex) {
 }
 
 int GainContainer::getGain(int move) {
-	return (*getMap(move).rbegin()).first;
+	int& maxGain = partition.at(move)?maxGainR:maxGainL;
+	return maxGain;
 }
 
 bool GainContainer::noVerts(int edge, bool part){
@@ -112,22 +126,28 @@ void GainContainer::gain_update(int move) {
 
 	for (auto& edge : reader.getVertEdge()[move]){
 		if (noVerts(edge, destPart)){
-			for (auto& v : reader.getEdgeVert()[edge])
+			for (auto& v : reader.getEdgeVert()[edge]){
+				if (v==move)
+					continue;
 				update(v, sourcePart, 1);
+			}
 		}
 		if (oneV(edge, sourcePart)>-1){
-			for (auto& v : reader.getEdgeVert()[edge])
+			for (auto& v : reader.getEdgeVert()[edge]){
+				if (v==move)
+					continue;
 				update(v, destPart, -1);
+			}
 		}
 
 		partition.apply(move);
 		int v = oneV(edge, sourcePart);
-		if (v>-1)
+		if (v>-1 && v!=move)
 			update(v, sourcePart, 1);
 		partition.apply(move);
 
 		v = oneV(edge, destPart);
-		if (v>-1)
+		if (v>-1 && v!=move)
 			update(v, destPart, -1);
 
 	}
@@ -135,20 +155,49 @@ void GainContainer::gain_update(int move) {
 
 void GainContainer::update(int vertex, bool part, int delta) {
 	auto& mm = part?right1:left0;
-	for (auto mapit=mm.rbegin(); mapit!=mm.rend(); mapit--){
+	int& maxGain = part?maxGainR:maxGainL;
+	for (auto mapit=mm.find(maxGain); mapit!=mm.begin(); mapit--){
 		for (auto iter=mapit->second.begin(); iter!=mapit->second.end(); iter++){
 			if (*iter==vertex){
 				mapit->second.erase(iter);
-				(delta>0?mapit++:mapit--)->second.push_front(vertex);
+				if (mapit->second.empty() && mapit->first==maxGain){
+					maxGain+=delta;
+				}
+				(delta>0?++mapit:--mapit)->second.push_front(vertex);
+				if (mapit->first>maxGain)
+					maxGain=mapit->first;
+				printGainBuckets();
+				return;
 			}
 		}
 	}
+	throw "Some internal error in GainContainer::update";
 }
 
 void GainContainer::putIntoBucket(int vertex, int gain) {
+	int &maxGain = partition.at(vertex)?maxGainR:maxGainL;
 	getMap(vertex)[gain].push_front(vertex);
+	if (gain>maxGain)
+		maxGain=gain;
 }
 
 void GainContainer::remove(int move) {
 	getMap(move).rbegin()->second.pop_front();
+}
+
+void GainContainer::printBucket(std::map<int, std::list<int>>& mm) {
+	for (auto &a : mm) {
+		cout << a.first << ": ";
+		for (auto &l : a.second) {
+			cout << l << ' ';
+		}
+		cout << endl;
+	}
+}
+
+void GainContainer::printGainBuckets() {
+	cout<<"left bucket"<<endl;
+	printBucket(left0);
+	cout<<endl<<"right bucket"<<endl;
+	printBucket(right1);
 }
