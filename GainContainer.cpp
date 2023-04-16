@@ -71,18 +71,15 @@ int GainContainer::getCost() {
 int GainContainer::bestFeasibleMove() {
 
 	int diff = maxGainR - maxGainL;
-	if (diff > 0) {
+	if (partition.checkBalance() > 0)
 		return *right1[maxGainR].begin();
-	} else if (diff < 0) {
+	else if (partition.checkBalance() < 0)
 		return *left0[maxGainL].begin();
-	} else if (partition.checkBalance() > 0) {
+	else if (diff > 0)
 		return *right1[maxGainR].begin();
-	} else if (partition.checkBalance() < 0) {
-		return *left0[maxGainL].begin();
-	} else {
-		return *right1[maxGainR].begin();
-	}
-
+	else if (diff < 0)
+		return *left0[maxGainR].begin();
+	return *right1[maxGainR].begin();
 }
 
 std::map<int, std::list<int> >& GainContainer::getMap(int vertex) {
@@ -172,6 +169,7 @@ void GainContainer::update(int vertex, bool part, int delta) {
 			}
 		}
 	}
+	printGainBuckets();
 	throw "Some internal error in GainContainer::update";
 }
 
@@ -186,9 +184,9 @@ int GainContainer::getNextGain(int move,
 		std::map<int, std::list<int>>::iterator iter) {
 	int gain = partition.at(move) ? maxGainR : maxGainL;
 	for (; iter != --(partition.at(move) ? right1 : left0).begin(); iter--) {
-		gain--;
 		if (!iter->second.empty())
 			return gain;
+		gain--;
 	}
 	return -INT_MAX + 1;
 }

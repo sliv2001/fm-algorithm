@@ -28,7 +28,7 @@ public:
 	int size();
 	bool at(int i);
 	void apply(int move);
-
+	void print();
 };
 
 #endif /* PARTITION_HPP_ */

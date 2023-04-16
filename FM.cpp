@@ -15,12 +15,13 @@ FM::FM(Reader& reader, Partition& partition):reader(reader), partition(partition
 
 void FM::calculate() {
 	do{
+		oldCost = newCost;
 		gc->initialize();
-		FMPass();
+		newCost=FMPass();
 	} while (newCost<oldCost);
 }
 
-void FM::FMPass() {
+int FM::FMPass() {
 	int cost = gc->getCost();
 	for (int i=0; i<reader.getVertexCount(); i++){
 		int move = gc->bestFeasibleMove();
@@ -31,8 +32,10 @@ void FM::FMPass() {
 		saveBestMove(move, cost);
 	}
 	revertToBest();
+	partition.print();
 	bestCost=INT_MAX;
 	bestCostMove=-1;
+	return cost;
 }
 
 void FM::saveBestMove(int move, int cost) {
@@ -45,10 +48,11 @@ void FM::saveBestMove(int move, int cost) {
 
 void FM::revertToBest() {
 	int revertCount = moves.size()-bestCostMove-1;
-	for (int i=revertCount; i>=0; i++){
+	for (int i=revertCount; i>0; i--){
 		partition.apply(moves.top());
 		moves.pop();
 	}
+
 }
 
 void FM::save(std::string path) {

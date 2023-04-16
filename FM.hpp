@@ -18,12 +18,12 @@ private:
 	Reader& reader;
 	Partition& partition;
 	GainContainer* gc;
-	int newCost=0;
+	int newCost=INT_MAX;
 	int oldCost=INT_MAX;
 	std::stack<int> moves;
 	int bestCost=INT_MAX;
 	int bestCostMove=-1;
-	void FMPass();
+	int FMPass();
 	void saveBestMove(int move, int cost);
 	void revertToBest();
 public:

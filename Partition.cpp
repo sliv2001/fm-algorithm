@@ -7,6 +7,7 @@
 
 #include "Partition.hpp"
 #include <cstdlib>
+#include <iostream>
 
 using namespace std;
 
@@ -61,4 +62,12 @@ void Partition::setSamplePartition() {
 #else
 	throw "Use this in debug mode only";
 #endif
+}
+
+void Partition::print() {
+	cout<<"Partition"<<endl;
+	for (int i=0; i<contents.size(); i++){
+		cout<<contents[i]<<' ';
+	}
+	cout<<endl;
 }
