@@ -13,17 +13,16 @@
 
 using namespace std;
 
-bool debug=0;
+Parser PRS;
 
 int main(int argc, char **argv) {
-	Parser parser(argc, argv);
+	PRS = Parser(argc, argv);
 	Reader *reader;
 
 	try {
-		cout << parser.getInput() << endl;
-		debug=parser.getDebug();
-		reader = new Reader(parser.getInput());
-		if (debug)
+		cout << PRS.getInput() << endl;
+		reader = new Reader(PRS.getInput());
+		if (PRS.getDebug())
 			reader->printMatrix();
 
 		Partition partition(reader->getVertexCount());
@@ -34,7 +33,7 @@ int main(int argc, char **argv) {
 #endif
 		FM solver(*reader, partition);
 		solver.calculate();
-		solver.save(parser.getInput()+".part.2");
+		solver.save(PRS.getInput()+".part.2");
 	}
 	catch (string &exception) {
 		cerr<<exception;

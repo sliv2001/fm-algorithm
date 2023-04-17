@@ -16,6 +16,7 @@ private:
 	cxxopts::Options options;
 	cxxopts::ParseResult result;
 public:
+	Parser():options("", ""){};
 	Parser(int, char**);
 	virtual ~Parser(){};
 	std::string getInput();

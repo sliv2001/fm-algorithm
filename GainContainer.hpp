@@ -27,6 +27,7 @@ private:
 	int oneV(int edge, bool part);
 	void printBucket(std::map<int, std::list<int>>& mm);
 	int getNextGain(int move, std::map<int, std::list<int>>::iterator iter);
+	void resetErased();
 
 public:
 	GainContainer(Reader& reader, Partition& partition);

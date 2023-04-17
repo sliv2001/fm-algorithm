@@ -6,7 +6,10 @@
  */
 
 #include "FM.hpp"
+#include "Parser.hpp"
 #include <fstream>
+
+extern Parser PRS;
 
 FM::FM(Reader& reader, Partition& partition):reader(reader), partition(partition) {
 	// TODO Auto-generated constructor stub
@@ -18,6 +21,7 @@ void FM::calculate() {
 		oldCost = newCost;
 		gc->initialize();
 		newCost=FMPass();
+		gc->printGainBuckets();
 	} while (newCost<oldCost);
 }
 
@@ -32,15 +36,17 @@ int FM::FMPass() {
 		saveBestMove(move, cost);
 	}
 	revertToBest();
-	partition.print();
-	bestCost=INT_MAX;
+	if (PRS.getDebug())
+		partition.print();
+	bestCost=cost;
 	bestCostMove=-1;
 	return cost;
 }
 
 void FM::saveBestMove(int move, int cost) {
 	moves.push(move);
-	if (cost<bestCost){
+
+	if (cost<bestCost && partition.checkBalance()<=1 && partition.checkBalance()>=-1){
 		bestCost=cost;
 		bestCostMove=moves.size()-1;
 	}

@@ -59,6 +59,9 @@ void Partition::setSamplePartition() {
 	if (vertexSize==8){
 		contents=vector<bool>({0, 1, 0, 0, 1, 1, 0, 1});
 	}
+	else {
+		setOneZeroPartition();
+	}
 #else
 	throw "Use this in debug mode only";
 #endif

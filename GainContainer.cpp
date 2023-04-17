@@ -6,12 +6,13 @@
  */
 
 #include "GainContainer.hpp"
+#include "Parser.hpp"
 #include <algorithm>
 #include <iostream>
 
 using namespace std;
 
-extern bool debug;
+extern Parser PRS;
 
 //TODO Add skip iterators to all
 
@@ -23,7 +24,16 @@ GainContainer::GainContainer(Reader &reader, Partition &partition) :
 	}
 }
 
+void GainContainer::resetErased() {
+	for (int i = 0; i < erased.size(); i++) {
+		erased[i] = 0;
+	}
+}
+
 void GainContainer::initialize() {
+
+	resetErased();
+
 	for (int i = 0; i < reader.getVertexCount(); i++) {
 		int gain = 0;
 		bool isRight = partition.at(i);
@@ -46,7 +56,7 @@ void GainContainer::initialize() {
 		}
 		this->putIntoBucket(i, gain);
 	}
-	if (debug)
+	if (PRS.getDebug())
 		printGainBuckets();
 }
 
@@ -147,6 +157,8 @@ void GainContainer::gain_update(int move) {
 	}
 }
 
+/*TODO rewrite search function*/
+
 void GainContainer::update(int vertex, bool part, int delta) {
 	if (erased[vertex])
 		return;
@@ -164,12 +176,14 @@ void GainContainer::update(int vertex, bool part, int delta) {
 				(delta > 0 ? ++mapit : --mapit)->second.push_front(vertex);
 				if (mapit->first > maxGain)
 					maxGain = mapit->first;
-				printGainBuckets();
+				if (PRS.getDebug())
+					printGainBuckets();
 				return;
 			}
 		}
 	}
-	printGainBuckets();
+	if (PRS.getDebug())
+		printGainBuckets();
 	throw "Some internal error in GainContainer::update";
 }
 
@@ -207,7 +221,8 @@ void GainContainer::remove(int move) {
 				if (mapit->second.empty() && mapit->first == maxGain) {
 					maxGain = getNextGain(move, mapit);
 				}
-				printGainBuckets();
+				if (PRS.getDebug())
+					printGainBuckets();
 				return;
 			}
 		}
