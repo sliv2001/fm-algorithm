@@ -18,10 +18,14 @@ extern Parser PRS;
 
 GainContainer::GainContainer(Reader &reader, Partition &partition) :
 		reader(reader), partition(partition), erased(reader.getVertexCount(), 0) {
-	for (int i = -reader.getEdgeCount(); i <= reader.getEdgeCount(); i++) {
-		left0[i] = std::list<int>();
-		right1[i] = std::list<int>();
-	}
+//	for (int i = -reader.getEdgeCount(); i <= reader.getEdgeCount(); i++) {
+//		left0[i] = std::list<int>();
+//		right1[i] = std::list<int>();
+//	}
+	searchSupport.reserve(reader.getVertexCount());
+//	for (int i=0; i<reader.getVertexCount(); i++){
+//		searchSupport[i]=std::pair<int, list<int>::iterator>();
+//	}
 }
 
 void GainContainer::resetErased() {
@@ -31,9 +35,7 @@ void GainContainer::resetErased() {
 }
 
 void GainContainer::initialize() {
-
 	resetErased();
-
 	for (int i = 0; i < reader.getVertexCount(); i++) {
 		int gain = 0;
 		bool isRight = partition.at(i);
@@ -61,19 +63,29 @@ void GainContainer::initialize() {
 }
 
 int GainContainer::getCost() {
-	int cost = 0;
-	for (int vertex = 0; vertex < reader.getVertexCount(); vertex++) {
-		bool isRight = partition.at(vertex);
-		for (auto &edge : reader.getVertEdge()[vertex]) {
-			for (auto &v1 : reader.getEdgeVert()[edge]) {
-				if (partition.at(v1) != isRight) {
-					cost++;
-					break;
-				}
-			}
-		}
+	int cost=0;
+	for (int edge=0; edge<reader.getEdgeCount(); edge++){
+		if (noVerts(edge, false))
+			continue;
+		if (noVerts(edge, true))
+			continue;
+		cost++;
 	}
 	return cost;
+
+//	int cost = 0;
+//	for (int vertex = 0; vertex < reader.getVertexCount(); vertex++) {
+//		bool isRight = partition.at(vertex);
+//		for (auto &edge : reader.getVertEdge()[vertex]) {
+//			for (auto &v1 : reader.getEdgeVert()[edge]) {
+//				if (partition.at(v1) != isRight) {
+//					cost++;
+//					break;
+//				}
+//			}
+//		}
+//	}
+//	return cost;
 }
 
 //TODO swap gain and balance
@@ -82,14 +94,14 @@ int GainContainer::bestFeasibleMove() {
 
 	int diff = maxGainR - maxGainL;
 	if (partition.checkBalance() > 0)
-		return *right1[maxGainR].begin();
+		return *right1[maxGainR].rbegin();
 	else if (partition.checkBalance() < 0)
-		return *left0[maxGainL].begin();
+		return *left0[maxGainL].rbegin();
 	else if (diff > 0)
-		return *right1[maxGainR].begin();
+		return *right1[maxGainR].rbegin();
 	else if (diff < 0)
-		return *left0[maxGainR].begin();
-	return *right1[maxGainR].begin();
+		return *left0[maxGainL].rbegin();
+	return *right1[maxGainR].rbegin();
 }
 
 std::map<int, std::list<int> >& GainContainer::getMap(int vertex) {
@@ -157,43 +169,74 @@ void GainContainer::gain_update(int move) {
 	}
 }
 
-/*TODO rewrite search function*/
-
 void GainContainer::update(int vertex, bool part, int delta) {
 	if (erased[vertex])
 		return;
 
 	auto &mm = part ? right1 : left0;
 	int &maxGain = part ? maxGainR : maxGainL;
-	for (auto mapit = mm.find(maxGain); mapit != mm.begin(); mapit--) {
-		for (auto iter = mapit->second.begin(); iter != mapit->second.end();
-				iter++) {
-			if (*iter == vertex) {
-				mapit->second.erase(iter);
-				if (mapit->second.empty() && mapit->first == maxGain) {
-					maxGain += delta;
-				}
-				(delta > 0 ? ++mapit : --mapit)->second.push_front(vertex);
-				if (mapit->first > maxGain)
-					maxGain = mapit->first;
-				if (PRS.getDebug())
-					printGainBuckets();
-				return;
-			}
-		}
+
+	auto &pr = searchSupport[vertex];
+	auto mapIterator = mm.find(pr.first);
+	auto listIterator = pr.second;
+
+	if (*listIterator != vertex)
+		throw "Some internal error in GainContainer::update";
+
+	mapIterator->second.erase(listIterator);
+	if (mapIterator->second.empty() && mapIterator->first == maxGain) {
+		maxGain += delta;
 	}
+	if (delta>0)
+		++mapIterator;
+	else
+		--mapIterator;
+	mm[pr.first+delta].push_back(vertex);
+	if (pr.first+delta > maxGain)
+		maxGain = pr.first+delta;
+
+	searchSupport[vertex].first+=delta;
+	searchSupport[vertex].second = --(mm[pr.first].end());
+
 	if (PRS.getDebug())
 		printGainBuckets();
-	throw "Some internal error in GainContainer::update";
+	return;
+
+
+	//	for (auto mapit = mm.find(maxGain); mapit != mm.begin(); mapit--) {
+	//		for (auto iter = mapit->second.begin(); iter != mapit->second.end();
+	//				iter++) {
+	//			if (*iter == vertex) {
+	//				mapit->second.erase(iter);
+	//				if (mapIterator->second.empty() && mapit->first == maxGain) {
+	//					maxGain += delta;
+	//				}
+	//				(delta > 0 ? ++mapIterator : --mapit)->second.push_back(vertex);
+	//				if (mapit->first > maxGain)
+	//					maxGain = mapit->first;
+	//				if (PRS.getDebug())
+	//					printGainBuckets();
+	//				return;
+	//			}
+	//		}
+	//	}
+	//	if (PRS.getDebug())
+	//		printGainBuckets();
+	//	throw "Some internal error in GainContainer::update";
 }
 
 void GainContainer::putIntoBucket(int vertex, int gain) {
 	int &maxGain = partition.at(vertex) ? maxGainR : maxGainL;
-	getMap(vertex)[gain].push_front(vertex);
+	getMap(vertex)[gain].push_back(vertex);
+
+	searchSupport[vertex].first=gain;
+	searchSupport[vertex].second=--(getMap(vertex)[gain].end());
+
 	if (gain > maxGain)
 		maxGain = gain;
 }
 
+/*TODO rewrite this*/
 int GainContainer::getNextGain(int move,
 		std::map<int, std::list<int>>::iterator iter) {
 	int gain = partition.at(move) ? maxGainR : maxGainL;
@@ -207,27 +250,52 @@ int GainContainer::getNextGain(int move,
 
 /*TODO replace it with better search func*/
 void GainContainer::remove(int move) {
+
+
 	if (erased[move])
 		return;
+
 	bool part = partition.at(move);
 	auto &mm = part ? right1 : left0;
 	int &maxGain = part ? maxGainR : maxGainL;
-	for (auto mapit = mm.find(maxGain); mapit != mm.begin(); mapit--) {
-		for (auto iter = mapit->second.begin(); iter != mapit->second.end();
-				iter++) {
-			if (*iter == move) {
-				mapit->second.erase(iter);
-				erased[move]=1;
-				if (mapit->second.empty() && mapit->first == maxGain) {
-					maxGain = getNextGain(move, mapit);
-				}
-				if (PRS.getDebug())
-					printGainBuckets();
-				return;
-			}
-		}
+
+	auto &pr = searchSupport[move];
+	auto mapIterator = mm.find(pr.first);
+	auto listIterator = pr.second;
+
+	if (*listIterator != move)
+		throw "Some internal error in GainContainer::remove";
+
+	mapIterator->second.erase(listIterator);
+	erased[move]=1;
+	if (mapIterator->second.empty() && mapIterator->first == maxGain) {
+		maxGain = getNextGain(move, mapIterator);
 	}
-	throw "Found no vertex " + to_string(move);
+	if (PRS.getDebug())
+		printGainBuckets();
+	return;
+
+	//	if (erased[move])
+		//		return;
+	//	bool part = partition.at(move);
+	//	auto &mm = part ? right1 : left0;
+	//	int &maxGain = part ? maxGainR : maxGainL;
+	//	for (auto mapit = mm.find(maxGain); mapit != mm.begin(); mapit--) {
+	//		for (auto iter = mapit->second.begin(); iter != mapit->second.end();
+	//				iter++) {
+	//			if (*iter == move) {
+	//				mapit->second.erase(iter);
+	//				erased[move]=1;
+	//				if (mapit->second.empty() && mapit->first == maxGain) {
+	//					maxGain = getNextGain(move, mapit);
+	//				}
+	//				if (PRS.getDebug())
+	//					printGainBuckets();
+	//				return;
+	//			}
+	//		}
+	//	}
+	//	throw "Found no vertex " + to_string(move);
 }
 
 void GainContainer::printBucket(std::map<int, std::list<int>> &mm) {

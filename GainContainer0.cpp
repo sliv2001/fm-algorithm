@@ -63,25 +63,25 @@
 //		if (diff>0){
 //			auto& vertexi = ((*right1.rbegin()).second.begin());
 //			int vertex= *vertex;
-//			(*right1.rbegin()).second.pop_front();
+//			(*right1.rbegin()).second.pop_back();
 //			partition[vertex]= !partition[vertex];
 //		}
 //		else if (diff<0){
 //			auto& vertexi = ((*left0.rbegin()).second.begin());
 //			int vertex= *vertex;
-//			(*left0.rbegin()).second.pop_front();
+//			(*left0.rbegin()).second.pop_back();
 //			partition[vertex]= !partition[vertex];
 //		}
 //		else if (partition.checkBalance()>0){
 //			auto& vertexi = ((*right1.rbegin()).second.begin());
 //			int vertex= *vertex;
-//			(*right1.rbegin()).second.pop_front();
+//			(*right1.rbegin()).second.pop_back();
 //			partition[vertex]= !partition[vertex];
 //		}
 //		else if (partition.checkBalance()<0){
 //			auto& vertexi = ((*left0.rbegin()).second.begin());
 //			int vertex= *vertex;
-//			(*left0.rbegin()).second.pop_front();
+//			(*left0.rbegin()).second.pop_back();
 //			partition[vertex]= !partition[vertex];
 //		}
 //		else{

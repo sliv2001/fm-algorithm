@@ -27,6 +27,7 @@ void FM::calculate() {
 
 int FM::FMPass() {
 	int cost = gc->getCost();
+	bestCost=cost;
 	for (int i=0; i<reader.getVertexCount(); i++){
 		int move = gc->bestFeasibleMove();
 		cost-=gc->getGain(move);
@@ -38,9 +39,11 @@ int FM::FMPass() {
 	revertToBest();
 	if (PRS.getDebug())
 		partition.print();
-	bestCost=cost;
+//	bestCost=cost;
 	bestCostMove=-1;
-	return cost;
+	if (cost<=0 || bestCost<=0)
+		throw "Cost became negative.";
+	return bestCost;
 }
 
 void FM::saveBestMove(int move, int cost) {
@@ -52,13 +55,20 @@ void FM::saveBestMove(int move, int cost) {
 	}
 }
 
+void FM::clearMoves() {
+	while (!moves.empty())
+		moves.pop();
+}
+
 void FM::revertToBest() {
 	int revertCount = moves.size()-bestCostMove-1;
 	for (int i=revertCount; i>0; i--){
 		partition.apply(moves.top());
+		if (PRS.getDebug())
+			partition.print();
 		moves.pop();
 	}
-
+	clearMoves();
 }
 
 void FM::save(std::string path) {

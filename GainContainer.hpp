@@ -20,6 +20,8 @@ private:
 	std::map<int, std::list<int>> left0;
 	std::map<int, std::list<int>> right1;
 	std::vector<bool> erased;
+	std::vector<std::pair<int, std::list<int>::iterator>> searchSupport;
+
 	int maxGainL=-INT_MAX+1;
 	int maxGainR=-INT_MAX+1;
 

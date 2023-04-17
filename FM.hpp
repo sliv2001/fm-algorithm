@@ -26,6 +26,8 @@ private:
 	int FMPass();
 	void saveBestMove(int move, int cost);
 	void revertToBest();
+	void clearMoves();
+
 public:
 	FM(Reader& reader, Partition& partition);
 	virtual ~FM(){delete gc;};
