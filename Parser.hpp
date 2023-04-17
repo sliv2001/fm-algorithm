@@ -21,6 +21,7 @@ public:
 	virtual ~Parser(){};
 	std::string getInput();
 	bool getDebug();
+	bool getMod();
 };
 
 #endif /* PARSER_HPP_ */

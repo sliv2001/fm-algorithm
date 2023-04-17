@@ -11,7 +11,8 @@
 Parser::Parser(int argc, char** argv) : options("FM-splitter", "Program to divide graphs with FM-algorithm"){
 	options.add_options()
 					("input", "Input file path", cxxopts::value<std::string>())
-					("d,debug", "Set debug options");
+					("d,debug", "Set debug options")
+					("m,modify", "Use modification");
 	options.parse_positional({"input"});
 	result=options.parse(argc, argv);
 }
@@ -29,6 +30,15 @@ std::string Parser::getInput() {
 bool Parser::getDebug() {
 	try{
 		return result["debug"].as<bool>();
+	}
+	catch (cxxopts::exceptions::option_has_no_value &e){
+		return 0;
+	}
+}
+
+bool Parser::getMod() {
+	try{
+		return result["modify"].as<bool>();
 	}
 	catch (cxxopts::exceptions::option_has_no_value &e){
 		return 0;

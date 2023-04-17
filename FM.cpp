@@ -8,6 +8,9 @@
 #include "FM.hpp"
 #include "Parser.hpp"
 #include <fstream>
+#include <iostream>
+
+using namespace std;
 
 extern Parser PRS;
 
@@ -21,13 +24,14 @@ void FM::calculate() {
 		oldCost = newCost;
 		gc->initialize();
 		newCost=FMPass();
-		gc->printGainBuckets();
+		cout<<"New partition cost: "<<newCost<<endl;
 	} while (newCost<oldCost);
 }
 
 int FM::FMPass() {
 	int cost = gc->getCost();
 	bestCost=cost;
+	int minLocalCost=cost;
 	for (int i=0; i<reader.getVertexCount(); i++){
 		int move = gc->bestFeasibleMove();
 		cost-=gc->getGain(move);
@@ -35,6 +39,10 @@ int FM::FMPass() {
 		gc->remove(move);
 		partition.apply(move);
 		saveBestMove(move, cost);
+		if (minLocalCost>cost)
+			minLocalCost=cost;
+		if (cost>minLocalCost && PRS.getMod())
+			break;
 	}
 	revertToBest();
 	if (PRS.getDebug())
