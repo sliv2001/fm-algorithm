@@ -1,34 +1,43 @@
 /*
  * Partition.hpp
  *
- *  Created on: 13 апр. 2023 г.
+ *  Created on: 18 апр. 2023 г.
  *      Author: ivans
  */
 
 #ifndef PARTITION_HPP_
 #define PARTITION_HPP_
 
-#include <vector>
-#include <stack>
-#include "Reader.hpp"
+#include "Graph.hpp"
 
 class Partition {
 private:
 	std::vector<bool> contents;
-	std::stack<int> workOrder;
-	int vertexSize;
+	int isRight;
+	int cost;
+	void calculate_cost(Graph &g);
 public:
-	Partition(int vertexSize);
-	virtual ~Partition(){};
-	void initPartition(int vertexSize);
-	void setOneZeroPartition();
-	void setRandomPartition();
-	void setSamplePartition();
-	int checkBalance();
-	int size();
-	bool at(int i);
+	Partition(Graph &g);
 	void apply(int move);
-	void print();
+	virtual ~Partition() {
+	}
+	int getCost() const {
+		return cost;
+	}
+
+	void setCost(int cost) {
+		this->cost = cost;
+	}
+
+	int getIsRight() const {
+		return isRight;
+	}
+
+	std::vector<bool>& getPartition() {
+		return contents;
+	}
+
+	;
 };
 
 #endif /* PARTITION_HPP_ */

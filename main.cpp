@@ -1,44 +1,30 @@
 /*
  * main.cpp
  *
- *  Created on: 11 апр. 2023 г.
+ *  Created on: 18 апр. 2023 г.
  *      Author: ivans
  */
 
-#include <iostream>
 #include "Parser.hpp"
-#include "Reader.hpp"
+#include "Graph.hpp"
 #include "Partition.hpp"
 #include "FM.hpp"
+
+#define GRAPH_PART_EXT ".part.2"
 
 using namespace std;
 
 Parser PRS;
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv){
+
 	PRS = Parser(argc, argv);
-	Reader *reader;
+	string path = PRS.getPath();
 
-	try {
-		cout << PRS.getInput() << endl;
-		reader = new Reader(PRS.getInput());
-		if (PRS.getDebug())
-			reader->printMatrix();
-
-		Partition partition(reader->getVertexCount());
-#ifdef DEBUG
-		partition.setSamplePartition();
-#else
-		partition.setOneZeroPartition();
-#endif
-		FM solver(*reader, partition);
-		solver.calculate();
-		solver.save(PRS.getInput()+".part.2");
-	}
-	catch (string &exception) {
-		cerr<<exception;
-		return -1;
-	}
+	Graph g(path);
+	Partition p(g);
+	FM solver(g, p);
+	solver.save(path+GRAPH_PART_EXT, p);
 
 	return 0;
 }

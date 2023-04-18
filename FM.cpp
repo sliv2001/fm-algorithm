@@ -1,89 +1,80 @@
 /*
  * FM.cpp
  *
- *  Created on: 14 апр. 2023 г.
+ *  Created on: 18 апр. 2023 г.
  *      Author: ivans
  */
 
 #include "FM.hpp"
 #include "Parser.hpp"
+#include <set>
 #include <fstream>
-#include <iostream>
-
-using namespace std;
 
 extern Parser PRS;
 
-FM::FM(Reader& reader, Partition& partition):reader(reader), partition(partition) {
-	// TODO Auto-generated constructor stub
-	gc = new GainContainer(reader, partition);
+FM::FM(Graph &g, Partition &p): g(g), isMod(PRS.getMod()) {
+	while(1) {
+		GainContainer gc(g, p);
+		int Best = this->FMPass(gc, g, p);
+		if (Best == p.getCost())
+			return;
+		p.setCost(Best);
+	}
 }
 
-void FM::calculate() {
-	do{
-		oldCost = newCost;
-		gc->initialize();
-		newCost=FMPass();
-		cout<<"New partition cost: "<<newCost<<endl;
-	} while (newCost<oldCost);
-}
-
-int FM::FMPass() {
-	int cost = gc->getCost();
-	bestCost=cost;
-	int minLocalCost=cost;
-	for (int i=0; i<reader.getVertexCount(); i++){
-		int move = gc->bestFeasibleMove();
-		cost-=gc->getGain(move);
-		gc->gain_update(move);
-		gc->remove(move);
-		partition.apply(move);
-		saveBestMove(move, cost);
-		if (minLocalCost>cost)
-			minLocalCost=cost;
-		if (cost>minLocalCost && PRS.getMod())
+int FM::FMPass(GainContainer &gc, Graph &g, Partition &p){
+	std::set<int> vertsToMove;
+	int cost = p.getCost(), best_cost = p.getCost();
+	for (int color = p.getIsRight(); !gc.is_empty(p.getIsRight()); color = p.getIsRight()){
+		std::pair<unsigned, int> currentGain = gc.best_feasible_move(color);
+		vertsToMove.insert(currentGain.first);
+		cost -= currentGain.second;
+		if (cost < best_cost) {
+			best_cost = cost;
+			vertsToMove.clear();
+		}
+		if (cost>best_cost && isMod){
 			break;
+		}
+		gainUpdate(gc, g, p, currentGain.first);
 	}
-	revertToBest();
-	if (PRS.getDebug())
-		partition.print();
-//	bestCost=cost;
-	bestCostMove=-1;
-	if (cost<=0 || bestCost<=0)
-		throw "Cost became negative.";
-	return bestCost;
+	for (auto v : vertsToMove)
+		p.apply(v);
+	return best_cost;
 }
 
-void FM::saveBestMove(int move, int cost) {
-	moves.push(move);
-
-	if (cost<bestCost && partition.checkBalance()<=1 && partition.checkBalance()>=-1){
-		bestCost=cost;
-		bestCostMove=moves.size()-1;
+void FM::gainUpdate(GainContainer &gc, Graph &g, Partition &p,
+		unsigned movedVertex) {
+	for (auto e : g.getVertEdge()[movedVertex]) {
+		int no_v_in_dest = 1, is_1v_in_source = 1, v_dest_num = 0, v_source_num = 0;
+		unsigned v_dest = 0, v_source = 0;
+		for (auto v : g.getEdgeVert()[e]) {
+			if (p.getIsRight() ^ p.getPartition()[v])
+				no_v_in_dest = 0, v_dest_num++, v_dest = v;
+			else if (v != movedVertex)
+				v_source = v, v_source_num++;
+			if (p.getPartition()[movedVertex] == p.getPartition()[v] && v != movedVertex)
+				is_1v_in_source = 0;
+		}
+		int UpdateVal = no_v_in_dest ? 1 : is_1v_in_source ? -1 : 0;
+		if (UpdateVal)
+			for (auto v : g.getEdgeVert()[e])
+				gc.update(v, p.getPartition()[v], UpdateVal);
+		if (v_source_num == 1)
+			gc.update(v_source, p.getPartition()[v_source], 1);
+		if (v_dest_num == 1)
+			gc.update(v_dest, p.getPartition()[v_dest], -1);
 	}
+	gc.erase(movedVertex, p.getPartition()[movedVertex]);
+	gc.update_deleted(movedVertex);
+	p.apply(movedVertex);
 }
 
-void FM::clearMoves() {
-	while (!moves.empty())
-		moves.pop();
-}
-
-void FM::revertToBest() {
-	int revertCount = moves.size()-bestCostMove-1;
-	for (int i=revertCount; i>0; i--){
-		partition.apply(moves.top());
-		if (PRS.getDebug())
-			partition.print();
-		moves.pop();
-	}
-	clearMoves();
-}
-
-void FM::save(std::string path) {
+void FM::save(std::string path, Partition &p) {
 	std::ofstream fout(path, std::ios_base::out);
 	if (!fout.is_open())
 		throw "Could not open output file";
-	for (int i=0; i<reader.getVertexCount(); i++){
-		fout<<partition.at(i)<<std::endl;
+	for (int i=0; i<g.getVertEdge().size(); i++){
+		fout<<p.getPartition()[i]<<std::endl;
 	}
 }

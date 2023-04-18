@@ -1,14 +1,13 @@
 /*
  * Parser.hpp
  *
- *  Created on: 11 апр. 2023 г.
+ *  Created on: 18 апр. 2023 г.
  *      Author: ivans
  */
 
 #ifndef PARSER_HPP_
 #define PARSER_HPP_
 
-#include <string>
 #include "cxxopts.hpp"
 
 class Parser {
@@ -17,10 +16,9 @@ private:
 	cxxopts::ParseResult result;
 public:
 	Parser():options("", ""){};
-	Parser(int, char**);
+	Parser(int argc, char** argv);
 	virtual ~Parser(){};
-	std::string getInput();
-	bool getDebug();
+	std::string getPath();
 	bool getMod();
 };
 
