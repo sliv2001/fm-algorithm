@@ -33,9 +33,10 @@ FM::FM(Graph &g, Partition &p): g(g), isMod(PRS.getMod()) {
 	auto finish = high_resolution_clock::now();
 	auto ms_int = duration_cast<milliseconds>(finish - start);
 
-	cout<< "Execution time: ";
-	cout << ms_int.count() << "ms\n" <<endl;
-	cout << "Cost of partition: "<< p.getCost()<<endl;
+//	cout<< "Execution time: ";
+//	cout << ms_int.count() << "ms\n" <<endl;
+//	cout << "Cost of partition: "<< p.getCost()<<endl;
+	cout<<ms_int.count() << " "<< p.getCost();
 }
 
 int FM::FMPass(GainContainer &gc, Graph &g, Partition &p){

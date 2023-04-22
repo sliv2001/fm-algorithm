@@ -9,6 +9,7 @@
 #include "Graph.hpp"
 #include "Partition.hpp"
 #include "FM.hpp"
+#include <iostream>
 
 #define GRAPH_PART_EXT ".part.2"
 
@@ -20,6 +21,8 @@ int main(int argc, char** argv){
 
 	PRS = Parser(argc, argv);
 	string path = PRS.getPath();
+
+	cout<<path<<" ";
 
 	Graph g(path);
 	Partition p(g);

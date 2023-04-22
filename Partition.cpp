@@ -10,8 +10,8 @@
 Partition::Partition(Graph &g) {
 	size_t size = g.getVertEdge().size();
 	contents = std::vector<bool>(size, 0);
-	for (size_t i = size / 2; i < size; contents[i++] = 1);
-	isRight = size % 2;
+	for (size_t i = size / 2; i < size; contents[i++] = 1)
+		isRight = (size-1) % 2;
 	calculate_cost(g);
 }
 
