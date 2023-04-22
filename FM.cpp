@@ -9,17 +9,33 @@
 #include "Parser.hpp"
 #include <set>
 #include <fstream>
+#include <iostream>
 
 extern Parser PRS;
 
 FM::FM(Graph &g, Partition &p): g(g), isMod(PRS.getMod()) {
+	using std::chrono::high_resolution_clock;
+	using std::chrono::duration_cast;
+	using std::chrono::duration;
+	using std::chrono::milliseconds;
+	using namespace std;
+
+	auto start=high_resolution_clock::now();
+
 	while(1) {
 		GainContainer gc(g, p);
 		int Best = this->FMPass(gc, g, p);
 		if (Best == p.getCost())
-			return;
+			break;
 		p.setCost(Best);
 	}
+
+	auto finish = high_resolution_clock::now();
+	auto ms_int = duration_cast<milliseconds>(finish - start);
+
+	cout<< "Execution time: ";
+	cout << ms_int.count() << "ms\n" <<endl;
+	cout << "Cost of partition: "<< p.getCost()<<endl;
 }
 
 int FM::FMPass(GainContainer &gc, Graph &g, Partition &p){
