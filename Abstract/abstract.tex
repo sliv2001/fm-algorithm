@@ -1,9 +1,11 @@
 \documentclass[12pt,a4paper,twocolumn]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{multirow}
 \usepackage[left=3.00cm, right=1.00cm, top=2.00cm, bottom=2.00cm]{geometry}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{multicol}
 \title{Fiduccia-Mattheyses algorithm. Implementation and modification}
 \author{Ivan Sladkov, B01-908, MIPT}
 \begin{document}
@@ -65,6 +67,38 @@
 	
 	\section{Comparison}
 	
-	Result of comparison is shown in table 
+	All benchmarks were executed on Apple M2 processor. Result of comparison is shown in table \ref{tab:res}.
+	% Please add the following required packages to your document preamble:
+	% \usepackage{multirow}
+	\begin{table}[]
+		\onecolumn
+		\begin{tabular}{|l|ll|ll|}
+			\hline
+			\multirow{2}{*}{File}              & \multicolumn{2}{l|}{Unmodified}                    & \multicolumn{2}{l|}{Modified}                      \\ \cline{2-5} 
+			& \multicolumn{1}{l|}{Time elapsed} & Partition cost & \multicolumn{1}{l|}{Time elapsed} & Partition cost \\ \hline
+			ISPD98\_ibm01.hgr & \multicolumn{1}{l|}{2311}         & 358            & \multicolumn{1}{l|}{246}          & 1598           \\ \hline
+			ISPD98\_ibm02.hgr & \multicolumn{1}{l|}{2658}         & 520            & \multicolumn{1}{l|}{371}          & 512            \\ \hline
+			ISPD98\_ibm03.hgr & \multicolumn{1}{l|}{2824}         & 3909           & \multicolumn{1}{l|}{429}          & 4148           \\ \hline
+			ISPD98\_ibm04.hgr & \multicolumn{1}{l|}{5345}         & 1882           & \multicolumn{1}{l|}{308}          & 4096           \\ \hline
+			ISPD98\_ibm05.hgr & \multicolumn{1}{l|}{8940}         & 3589           & \multicolumn{1}{l|}{709}          & 6086           \\ \hline
+			ISPD98\_ibm06.hgr & \multicolumn{1}{l|}{4653}         & 1724           & \multicolumn{1}{l|}{751}          & 4799           \\ \hline
+			ISPD98\_ibm07.hgr & \multicolumn{1}{l|}{7191}         & 3018           & \multicolumn{1}{l|}{1299}         & 7274           \\ \hline
+			ISPD98\_ibm08.hgr & \multicolumn{1}{l|}{9761}         & 1382           & \multicolumn{1}{l|}{1360}         & 8776           \\ \hline
+			ISPD98\_ibm09.hgr & \multicolumn{1}{l|}{11944}        & 3873           & \multicolumn{1}{l|}{1995}         & 9556           \\ \hline
+			ISPD98\_ibm10.hgr & \multicolumn{1}{l|}{12128}        & 3008           & \multicolumn{1}{l|}{1637}         & 13001          \\ \hline
+			ISPD98\_ibm11.hgr & \multicolumn{1}{l|}{10075}        & 8693           & \multicolumn{1}{l|}{2313}         & 13463          \\ \hline
+			ISPD98\_ibm12.hgr & \multicolumn{1}{l|}{20845}        & 4622           & \multicolumn{1}{l|}{2959}         & 14155          \\ \hline
+			ISPD98\_ibm13.hgr & \multicolumn{1}{l|}{17317}        & 3222           & \multicolumn{1}{l|}{3225}         & 16767          \\ \hline
+			ISPD98\_ibm14.hgr & \multicolumn{1}{l|}{51533}        & 9833           & \multicolumn{1}{l|}{6173}         & 22643          \\ \hline
+			ISPD98\_ibm15.hgr & \multicolumn{1}{l|}{41726}        & 7899           & \multicolumn{1}{l|}{6496}         & 30221          \\ \hline
+			ISPD98\_ibm16.hgr & \multicolumn{1}{l|}{39586}        & 5539           & \multicolumn{1}{l|}{12863}        & 32235          \\ \hline
+			ISPD98\_ibm17.hgr & \multicolumn{1}{l|}{51904}        & 6354           & \multicolumn{1}{l|}{11020}        & 40035          \\ \hline
+			ISPD98\_ibm18.hgr & \multicolumn{1}{l|}{64940}        & 3483           & \multicolumn{1}{l|}{7323}         & 32570          \\ \hline
+		\end{tabular}
+		\caption{Results of research}
+		\label{tab:res}
+	\end{table}
+
+	The reason for introducing this optimization was to check whether reduction of vertices, that are moved in FMPass(), leads to reduction of execution time. 
 	
 \end{document}

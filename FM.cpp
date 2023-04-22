@@ -50,10 +50,11 @@ int FM::FMPass(GainContainer &gc, Graph &g, Partition &p){
 			best_cost = cost;
 			vertsToMove.clear();
 		}
+		gainUpdate(gc, g, p, currentGain.first);
 		if (cost>best_cost+PRS.getModValue() && isMod){
+//			p.apply(currentGain.first);
 			break;
 		}
-		gainUpdate(gc, g, p, currentGain.first);
 	}
 	for (auto v : vertsToMove)
 		p.apply(v);
