@@ -49,7 +49,7 @@ int FM::FMPass(GainContainer &gc, Graph &g, Partition &p){
 			best_cost = cost;
 			vertsToMove.clear();
 		}
-		if (cost>best_cost && isMod){
+		if (cost>best_cost+PRS.getModValue() && isMod){
 			break;
 		}
 		gainUpdate(gc, g, p, currentGain.first);

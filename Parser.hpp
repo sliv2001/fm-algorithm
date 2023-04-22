@@ -20,6 +20,7 @@ public:
 	virtual ~Parser(){};
 	std::string getPath();
 	bool getMod();
+	int getModValue();
 };
 
 #endif /* PARSER_HPP_ */

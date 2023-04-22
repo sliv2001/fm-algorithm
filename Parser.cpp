@@ -14,7 +14,8 @@ Parser::Parser(int argc, char** argv) : options("FM-splitter", "Program to divid
 	options.add_options()
 			("input", "Input file path", cxxopts::value<std::string>())
 			("d,debug", "Set debug options")
-			("m,modify", "Use modification");
+			("m,modify", "Use modification")
+			("value", "Use cut-off value in modification", cxxopts::value<int>());
 	options.parse_positional({"input"});
 	result=options.parse(argc, argv);
 }
@@ -28,6 +29,18 @@ bool Parser::getMod() {
 		return result["modify"].as<bool>();
 	}
 	catch (cxxopts::exceptions::option_has_no_value &e){
+		return 0;
+	}
+}
+
+int Parser::getModValue() {
+	try{
+		int res =  result["value"].as<int>();
+		if (!getMod() && res>0)
+			throw "You should set modification";
+		return res;
+	}
+	catch(cxxopts::exceptions::option_has_no_value &e){
 		return 0;
 	}
 }
