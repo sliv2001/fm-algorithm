@@ -32,7 +32,7 @@
 	
 	\section{Modification of algorithm}
 	
-	In order to make algorithm converge faster a <<cutoff>> modification was implemented: if movement of a vertex gives significant cost increase, then further motion is not done. So function \texttt{FMPass()} is transformed into:
+	In order to make algorithm converge faster a <<cutoff>> modification was implemented: if movement of a vertex gives significant cost increase, then further motion is not done. The original idea was to avoid applying of vertices movement, whose gain is negative. Then the threshold was added. So function \texttt{FMPass()} is transformed into:
 	\begin{verbatim}
 		function FMpass
 		(gain_container, partitionment) :
@@ -97,8 +97,11 @@
 		\end{tabular}
 		\caption{Results of research}
 		\label{tab:res}
+		\twocolumn
 	\end{table}
 
-	The reason for introducing this optimization was to check whether reduction of vertices, that are moved in FMPass(), leads to reduction of execution time. 
+	The reason for introducing this optimization was to check whether reduction of vertices, that are moved in FMPass(), leads to reduction of execution time. It can be seen that such an approach in most cases gives much higher convergence speed; however partition cost gets higher. It can also be seen that relative growth of partition cost w. r. t. edges number is greater than reduction of elapsed time.
+	
+	As a conclusion, this modification does not lead to increase of overall productivity.
 	
 \end{document}
