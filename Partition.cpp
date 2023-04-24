@@ -6,6 +6,7 @@
  */
 
 #include "Partition.hpp"
+#include <algorithm>
 
 Partition::Partition(Graph &g) {
 	size_t size = g.getVertEdge().size();

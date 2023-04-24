@@ -9,6 +9,7 @@
 #define GRAPH_HPP_
 
 #include <string>
+#include <vector>
 
 class Graph {
 private:
