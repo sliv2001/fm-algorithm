@@ -1,3 +1,4 @@
+% !TeX spellcheck = en_US
 \documentclass[12pt,a4paper,twocolumn]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -70,38 +71,165 @@
 	All benchmarks were executed on Apple M2 processor. Result of comparison is shown in table \ref{tab:res}.
 	% Please add the following required packages to your document preamble:
 	% \usepackage{multirow}
-	\begin{table}[]
+	\begin{table*}[tb]
 		\onecolumn
-		\begin{tabular}{|l|ll|ll|}
-			\hline
-			\multirow{2}{*}{File}              & \multicolumn{2}{l|}{Unmodified}                    & \multicolumn{2}{l|}{Modified}                      \\ \cline{2-5} 
-			& \multicolumn{1}{l|}{Time elapsed} & Partition cost & \multicolumn{1}{l|}{Time elapsed} & Partition cost \\ \hline
-			ISPD98\_ibm01.hgr & \multicolumn{1}{l|}{2311}         & 358            & \multicolumn{1}{l|}{246}          & 1598           \\ \hline
-			ISPD98\_ibm02.hgr & \multicolumn{1}{l|}{2658}         & 520            & \multicolumn{1}{l|}{371}          & 512            \\ \hline
-			ISPD98\_ibm03.hgr & \multicolumn{1}{l|}{2824}         & 3909           & \multicolumn{1}{l|}{429}          & 4148           \\ \hline
-			ISPD98\_ibm04.hgr & \multicolumn{1}{l|}{5345}         & 1882           & \multicolumn{1}{l|}{308}          & 4096           \\ \hline
-			ISPD98\_ibm05.hgr & \multicolumn{1}{l|}{8940}         & 3589           & \multicolumn{1}{l|}{709}          & 6086           \\ \hline
-			ISPD98\_ibm06.hgr & \multicolumn{1}{l|}{4653}         & 1724           & \multicolumn{1}{l|}{751}          & 4799           \\ \hline
-			ISPD98\_ibm07.hgr & \multicolumn{1}{l|}{7191}         & 3018           & \multicolumn{1}{l|}{1299}         & 7274           \\ \hline
-			ISPD98\_ibm08.hgr & \multicolumn{1}{l|}{9761}         & 1382           & \multicolumn{1}{l|}{1360}         & 8776           \\ \hline
-			ISPD98\_ibm09.hgr & \multicolumn{1}{l|}{11944}        & 3873           & \multicolumn{1}{l|}{1995}         & 9556           \\ \hline
-			ISPD98\_ibm10.hgr & \multicolumn{1}{l|}{12128}        & 3008           & \multicolumn{1}{l|}{1637}         & 13001          \\ \hline
-			ISPD98\_ibm11.hgr & \multicolumn{1}{l|}{10075}        & 8693           & \multicolumn{1}{l|}{2313}         & 13463          \\ \hline
-			ISPD98\_ibm12.hgr & \multicolumn{1}{l|}{20845}        & 4622           & \multicolumn{1}{l|}{2959}         & 14155          \\ \hline
-			ISPD98\_ibm13.hgr & \multicolumn{1}{l|}{17317}        & 3222           & \multicolumn{1}{l|}{3225}         & 16767          \\ \hline
-			ISPD98\_ibm14.hgr & \multicolumn{1}{l|}{51533}        & 9833           & \multicolumn{1}{l|}{6173}         & 22643          \\ \hline
-			ISPD98\_ibm15.hgr & \multicolumn{1}{l|}{41726}        & 7899           & \multicolumn{1}{l|}{6496}         & 30221          \\ \hline
-			ISPD98\_ibm16.hgr & \multicolumn{1}{l|}{39586}        & 5539           & \multicolumn{1}{l|}{12863}        & 32235          \\ \hline
-			ISPD98\_ibm17.hgr & \multicolumn{1}{l|}{51904}        & 6354           & \multicolumn{1}{l|}{11020}        & 40035          \\ \hline
-			ISPD98\_ibm18.hgr & \multicolumn{1}{l|}{64940}        & 3483           & \multicolumn{1}{l|}{7323}         & 32570          \\ \hline
-		\end{tabular}
+		\small
+\begin{tabular}{|lllll|l|l|}
+	\hline
+	\multicolumn{1}{|l|}{\multirow{2}{*}{File}} &
+	\multicolumn{2}{l|}{Base} &
+	\multicolumn{2}{l|}{Modified} &
+	\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Base/Modified \\ Time ratio\end{tabular}} &
+	\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Modified/Base \\ Cost ratio\end{tabular}} \\ \cline{2-5}
+	\multicolumn{1}{|l|}{} &
+	\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Time \\ elapsed\end{tabular}} &
+	\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Partition\\ cost\end{tabular}} &
+	\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Time\\ elapsed\end{tabular}} &
+	\begin{tabular}[c]{@{}l@{}}Partition\\ cost\end{tabular} &
+	&
+	\\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm01.hgr} &
+	\multicolumn{1}{l|}{2311} &
+	\multicolumn{1}{l|}{358} &
+	\multicolumn{1}{l|}{246} &
+	1598 &
+	9,39 &
+	4,46 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm02.hgr} &
+	\multicolumn{1}{l|}{2658} &
+	\multicolumn{1}{l|}{520} &
+	\multicolumn{1}{l|}{371} &
+	512 &
+	7,16 &
+	0,98 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm03.hgr} &
+	\multicolumn{1}{l|}{2824} &
+	\multicolumn{1}{l|}{3909} &
+	\multicolumn{1}{l|}{429} &
+	4148 &
+	6,58 &
+	1,06 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm04.hgr} &
+	\multicolumn{1}{l|}{5345} &
+	\multicolumn{1}{l|}{1882} &
+	\multicolumn{1}{l|}{308} &
+	4096 &
+	17,35 &
+	2,18 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm05.hgr} &
+	\multicolumn{1}{l|}{8940} &
+	\multicolumn{1}{l|}{3589} &
+	\multicolumn{1}{l|}{709} &
+	6086 &
+	12,61 &
+	1,70 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm06.hgr} &
+	\multicolumn{1}{l|}{4653} &
+	\multicolumn{1}{l|}{1724} &
+	\multicolumn{1}{l|}{751} &
+	4799 &
+	6,20 &
+	2,78 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm07.hgr} &
+	\multicolumn{1}{l|}{7191} &
+	\multicolumn{1}{l|}{3018} &
+	\multicolumn{1}{l|}{1299} &
+	7274 &
+	5,54 &
+	2,41 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm08.hgr} &
+	\multicolumn{1}{l|}{9761} &
+	\multicolumn{1}{l|}{1382} &
+	\multicolumn{1}{l|}{1360} &
+	8776 &
+	7,18 &
+	6,35 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm09.hgr} &
+	\multicolumn{1}{l|}{11944} &
+	\multicolumn{1}{l|}{3873} &
+	\multicolumn{1}{l|}{1995} &
+	9556 &
+	5,99 &
+	2,47 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm10.hgr} &
+	\multicolumn{1}{l|}{12128} &
+	\multicolumn{1}{l|}{3008} &
+	\multicolumn{1}{l|}{1637} &
+	13001 &
+	7,41 &
+	4,32 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm11.hgr} &
+	\multicolumn{1}{l|}{10075} &
+	\multicolumn{1}{l|}{8693} &
+	\multicolumn{1}{l|}{2313} &
+	13463 &
+	4,36 &
+	1,55 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm12.hgr} &
+	\multicolumn{1}{l|}{20845} &
+	\multicolumn{1}{l|}{4622} &
+	\multicolumn{1}{l|}{2959} &
+	14155 &
+	7,04 &
+	3,06 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm13.hgr} &
+	\multicolumn{1}{l|}{17317} &
+	\multicolumn{1}{l|}{3222} &
+	\multicolumn{1}{l|}{3225} &
+	16767 &
+	5,37 &
+	5,20 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm14.hgr} &
+	\multicolumn{1}{l|}{51533} &
+	\multicolumn{1}{l|}{9833} &
+	\multicolumn{1}{l|}{6173} &
+	22643 &
+	8,35 &
+	2,30 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm15.hgr} &
+	\multicolumn{1}{l|}{41726} &
+	\multicolumn{1}{l|}{7899} &
+	\multicolumn{1}{l|}{6496} &
+	30221 &
+	6,42 &
+	3,83 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm16.hgr} &
+	\multicolumn{1}{l|}{39586} &
+	\multicolumn{1}{l|}{5539} &
+	\multicolumn{1}{l|}{12863} &
+	32235 &
+	3,08 &
+	5,82 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm17.hgr} &
+	\multicolumn{1}{l|}{51904} &
+	\multicolumn{1}{l|}{6354} &
+	\multicolumn{1}{l|}{11020} &
+	40035 &
+	4,71 &
+	6,30 \\ \hline
+	\multicolumn{1}{|l|}{ISPD98\_ibm18.hgr} &
+	\multicolumn{1}{l|}{64940} &
+	\multicolumn{1}{l|}{3483} &
+	\multicolumn{1}{l|}{7323} &
+	32570 &
+	8,87 &
+	9,35 \\ \hline
+	\multicolumn{5}{|l|}{} &
+	\textit{\textbf{7.42}} &
+	\textit{\textbf{3.67}} \\ \hline
+\end{tabular}
 		\caption{Results of research}
 		\label{tab:res}
 		\twocolumn
-	\end{table}
+	\end{table*}
 
 	The reason for introducing this optimization was to check whether reduction of vertices, that are moved in FMPass(), leads to reduction of execution time. It can be seen that such an approach in most cases gives much higher convergence speed; however partition cost gets higher. It can also be seen that relative growth of partition cost w. r. t. edges number is greater than reduction of elapsed time.
 	
-	As a conclusion, this modification does not lead to increase of overall productivity.
+	As a conclusion, this modification, while improving overall performance, results in a high partition cost, which may be unacceptable in some applications.
+	
+	\begin{thebibliography}{9}
+		\bibitem{fm} C.M. Fiduccia and R.M. Mattheyses \textit{A Linear-Time Heuristic for Improving Network Partitions}, General Electric Research and Development Center.
+		
+	\end{thebibliography}
 	
 \end{document}
